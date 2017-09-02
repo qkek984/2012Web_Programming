@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+i.italic {font-size:30px; font-weight:bold; font-family:sans-serif;}
+</style>
+</head>
+
+<body>
+
+<div id="container" style="width:500px">
+
+
+<div id="content" style="background-color:#FFFFFF;height:600px;width:800px;float:left;">
+
+<fieldset>
+<i class="italic"><script language="JavaScript1.2">
+
+var message="안녕하세요. 바다네 홈페이지에 오신 것을 환영합니다."
+var neonbasecolor="#33CCFF"
+var neontextcolor="#FF0000"
+var neontextcolor2="#FFFFA8"
+var flashspeed=150					// speed of flashing in milliseconds
+var flashingletters=3						// number of letters flashing in neontextcolor
+var flashingletters2=1						// number of letters flashing in neontextcolor2 (0 to disable)
+var flashpause=0						// the pause between flash-cycles in milliseconds
+
+///No need to edit below this line/////
+
+var n=0
+if (document.all||document.getElementById){
+document.write('<font color="'+neonbasecolor+'">')
+for (m=0;m<message.length;m++)
+document.write('<span id="neonlight'+m+'">'+message.charAt(m)+'</span>')
+document.write('</font>')
+}
+else
+document.write(message)
+
+function crossref(number){
+var crossobj=document.all? eval("document.all.neonlight"+number) : document.getElementById("neonlight"+number)
+return crossobj
+}
+
+function neon(){
+
+//Change all letters to base color
+if (n==0){
+for (m=0;m<message.length;m++)
+crossref(m).style.color=neonbasecolor
+}
+
+//cycle through and change individual letters to neon color
+crossref(n).style.color=neontextcolor
+
+if (n>flashingletters-1) crossref(n-flashingletters).style.color=neontextcolor2 
+if (n>(flashingletters+flashingletters2)-1) crossref(n-flashingletters-flashingletters2).style.color=neonbasecolor
+
+
+if (n<message.length-1)
+n++
+else{
+n=0
+clearInterval(flashing)
+setTimeout("beginneon()",flashpause)
+return
+}
+}
+
+function beginneon(){
+if (document.all||document.getElementById)
+flashing=setInterval("neon()",flashspeed)
+}
+beginneon()
+
+
+</script></i>
+</fieldset>
+
+
+<table border="2">
+<tr bgcolor="black">
+<td>
+
+<script>
+
+var dayarray=new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+var montharray=new Array("January","February","March","April","May","June","July","August","September","October","November","December")
+
+function getthedate(){
+var mydate=new Date()
+var year=mydate.getYear()
+if (year < 1000)
+year+=1900
+var day=mydate.getDay()
+var month=mydate.getMonth()
+var daym=mydate.getDate()
+if (daym<10)
+daym="0"+daym
+var hours=mydate.getHours()
+var minutes=mydate.getMinutes()
+var seconds=mydate.getSeconds()
+var dn="AM"
+if (hours>=12)
+dn="PM"
+if (hours>12){
+hours=hours-12
+}
+if (hours==0)
+hours=12
+if (minutes<=9)
+minutes="0"+minutes
+if (seconds<=9)
+seconds="0"+seconds
+//change font size here
+var cdate="<big><font color='yellow' face='Arial' size='6'><b>"+dayarray[day]+", "+montharray[month]+" "+daym+", "+year+" "+hours+":"+minutes+":"+seconds+" "+dn
++"</b></font></big>"
+if (document.all)
+document.all.clock.innerHTML=cdate
+else if (document.getElementById)
+document.getElementById("clock").innerHTML=cdate
+else
+document.write(cdate)
+}
+if (!document.all&&!document.getElementById)
+getthedate()
+function goforit(){
+if (document.all||document.getElementById)
+setInterval("getthedate()",1000)
+}
+
+</script>
+<span id="clock"></span>
+<body onLoad="goforit()">
+</td>
+</tr>
+</table>
+<img src="http://abluesea.wo.to/wp/img1.gif">
+<img src="http://abluesea.wo.to/wp/img2.gif" align="right">
+<img src="http://abluesea.wo.to/wp/fruit.gif" align="left">
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+</body>
+</html>

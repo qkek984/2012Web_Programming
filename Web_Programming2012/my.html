@@ -1,0 +1,331 @@
+<html>
+<head>
+<script type='text/javascript'>
+
+/***********************************************
+* Carousel Slideshow II- By Harry Armadillo (http://www.codingforums.com/showthread.php?t=58814)
+* Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
+* Please keep this notice intact
+***********************************************/
+
+function carousel(params){
+  if(!(params.width>0 && isFinite(params.width)))params.width=100;
+  if(!(params.height>0 && isFinite(params.height)))params.height=100;
+  if(!(params.sides>2 && isFinite(params.sides)))params.sides=4;
+  if(!(params.steps>0 && params.steps<100 && isFinite(params.steps)))params.steps=20;
+  if(!(params.speed>0 && isFinite(params.speed)))params.speed=8;
+  if(!(params.image_border_width>=0 && isFinite(params.image_border_width)))params.image_border_width=0;
+  if(isFinite(params.id)||!params.id)params.id='bad_id_given_'+Math.random();
+  
+  document.write("<div style='position:relative;overflow:hidden;' id='"+params.id.replace(/[^a-zA-Z0-9]+/g,'_')+"'></div>");
+  var cdiv=document.getElementById(params.id.replace(/[^a-zA-Z0-9]+/g,'_'))
+  cdiv.style.width=params.width+'px';
+  cdiv.style.height=params.height+'px';
+  cdiv.style.border=params.border;
+  cdiv.style.position='relative';
+  cdiv.style.overflow='hidden';
+  cdiv.title=params.id;
+    
+  var counter=0,spinning=true,interval=Math.floor(60000/params.sides/params.steps/params.speed)-5;
+  interval=isNaN(interval)?200:interval;
+  var img_position=[],images=[],img_dimension=[];
+  var img_index=params.images.length+1,img_index_cap=2*params.images.length;
+  var faces=Math.ceil(params.sides/2), dimension, direction, targ, attr, faraway;
+
+  function init(){
+    if(params.direction=="left" || params.direction=="right"){
+      direction=params.direction;
+      dimension="width";
+      }
+    else if(params.direction=="top" || params.direction=="bottom"){
+      direction=params.direction;
+      dimension="height";
+      }
+    else {
+      direction="left";
+      dimension="width";
+      }      
+    faraway=(direction=="left"||direction=="top")?'-20000px':'20000px';
+    cdiv.style[dimension]=params[dimension]/(params.size_mode=='image'?Math.sin(Math.PI/params.sides):1)+'px';
+    var img=new Image();
+    img.style.position='absolute';
+    img.style[direction]=faraway;
+    img.style.width=params.width-2*params.image_border_width+'px';
+    img.style.height=params.height-2*params.image_border_width+'px';
+    img.style.border=(params.image_border_width||0)+'px solid '+params.image_border_color;
+  
+    for(var i=0;i<params.images.length;i++){
+      images[i]=img.cloneNode(true);
+      images[i].src=params.images[i];
+      if(params.links && params.links[i] && params.links[i]!=''){
+        targ=params.lnk_targets && params.lnk_targets[i]||params.lnk_base||'new';
+        if(targ=="_blank"){
+          attr=(params.lnk_attr && params.lnk_attr[i])?",'"+params.lnk_attr[i]+"'":"";
+          images[i].onclick=new Function("window.open('"+params.links[i]+"','"+targ+"'"+attr+")");
+          }
+        else if(targ.substr(0,1)=="_"){
+          images[i].onclick=new Function(targ.substr(1)+".location='"+params.links[i]+"'");
+          }
+        else{
+          attr=(params.lnk_attr && params.lnk_attr[i])?",'"+params.lnk_attr[i]+"'":"";
+          images[i].onclick=new Function("var t='"+targ+"';if(window[t]){try{window[t].close()}catch(z){}}window[t]=window.open('"+params.links[i]+"',t"+attr+");window[t].focus()");
+          }
+        images[i].style.cursor=document.all?'hand':'pointer';
+        }
+
+      if(params.titles && params.titles[i] && params.titles[i]!='')
+        images[i].title=params.titles[i];
+      if(document.all)
+        images[i].alt=images[i].title;
+      images[i+params.images.length]=images[i];
+      if(params.images.length==faces)
+        images[i+2*params.images.length]=images[i];
+      cdiv.appendChild(images[i]);
+      }
+  
+    var face_size=params.size_mode=='image'?params[dimension]:params[dimension]*Math.sin(Math.PI/params.sides);
+    var face_offset=params[dimension]*Math.cos(Math.PI/params.sides)/(params.size_mode=='image'?Math.sin(Math.PI/params.sides):1)/2-.5;
+    var pi_piece=2*Math.PI/params.steps/params.sides;
+    for(i=0;i<=params.steps*faces;i++){
+      img_dimension[i]=face_size*Math.sin(pi_piece*i);
+      img_position[i]=(i<params.steps*params.sides/2)?Math.floor(params[dimension]/2/(params.size_mode=='image'?Math.sin(Math.PI/params.sides):1)-face_offset*Math.cos(pi_piece*i)-img_dimension[i]/2)+'px':faraway;
+      img_dimension[i]=img_dimension[i]-2*params.image_border_width>1?Math.ceil(img_dimension[i])-2*params.image_border_width+'px':'1px';
+      }
+    }
+  init();
+
+  cdiv.rotate = function(){
+    setTimeout('document.getElementById("'+cdiv.id+'").rotate()',interval);
+    if(!spinning) return;
+    if(++counter>=params.steps){
+      counter=0;
+      if(++img_index>=img_index_cap)
+        img_index=params.images.length;
+      }
+    images[img_index-faces].style[direction]=faraway;
+    for(var i=faces-1;i>=0;i--){
+      images[img_index-i].style[direction]=img_position[counter+i*params.steps];
+      images[img_index-i].style[dimension]=img_dimension[counter+i*params.steps];
+      }
+    }
+  cdiv.onmouseover=function(){
+    spinning=false;
+    }
+  cdiv.onmouseout=function(){
+    spinning=true;
+    }
+  setTimeout('document.getElementById("'+cdiv.id+'").rotate()',100);
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+<body>
+
+<br>
+<fieldset>
+<div style="margin-top: 1em; font-weight: bold;"></div>
+<script type='text/javascript'>
+carousel({id:'Amazon Books 2',
+          border:'',
+          size_mode:'image',
+          width:200,
+          height:250,
+          sides:6,
+          steps:23,
+          speed:5,
+          direction:'left',
+          images:['http://abluesea.wo.to/wp/my1.jpg',
+                  'http://abluesea.wo.to/wp/my2.jpg',
+                  'http://abluesea.wo.to/wp/my3.jpg',
+		  'http://abluesea.wo.to/wp/my4.jpg'],
+
+          titles:['age 14',
+									'age 16',
+									'age 18',
+									'age 19'],
+          image_border_width:2,
+          image_border_color:'#0066FF'
+          });
+</script>
+<br>
+<TABLE cellSpacing=4 cellPadding=3 width=400 border=1>
+<TBODY> 
+<TR>
+<TD bgColor=black><FONT face=돋움 color=lightgreen size=4>
+<MARQUEE behavior=alternate><b>저의 중1~고3 까지의 사진입니다.</b></MARQUEE></FONT></TD></TR></TBODY></TABLE>
+
+
+<marquee behavior="alternate" scrollamount="8" width="37" height="30"><font size="2" color="red"><b>@^.^@</b></font></marquee>
+
+
+</fieldset>
+
+<script language="JavaScript">
+
+//Analog clock script- By Kurt (kurt.grigg@virgin.net)
+//Script featured on Dynamic Drive
+//Visit http://www.dynamicdrive.com for this script and more
+
+fCol='444444'; //face colour.
+sCol='FF0000'; //seconds colour.
+mCol='444444'; //minutes colour.
+hCol='444444'; //hours colour.
+
+Ybase=30; //Clock height.
+Xbase=30; //Clock width.
+
+
+H='...';
+H=H.split('');
+M='....';
+M=M.split('');
+S='.....';
+S=S.split('');
+NS4=(document.layers);
+NS6=(document.getElementById&&!document.all);
+IE4=(document.all);
+Ypos=0;
+Xpos=0;
+dots=12;
+Split=360/dots;
+if (NS6){
+for (i=1; i < dots+1; i++){
+document.write('<div id="n6Digits'+i+'" style="position:absolute;top:0px;left:0px;width:30px;height:30px;font-family:Arial;font-size:10px;color:#'+fCol+';text-align:center;padding-top:10px">'+i+'</div>');
+}
+for (i=0; i < M.length; i++){
+document.write('<div id="Ny'+i+'" style="position:absolute;top:0px;left:0px;width:2px;height:2px;font-size:2px;background:#'+mCol+'"></div>');
+}
+for (i=0; i < H.length; i++){
+document.write('<div id="Nz'+i+'" style="position:absolute;top:0px;left:0px;width:2px;height:2px;font-size:2px;background:#'+hCol+'"></div>');
+}
+for (i=0; i < S.length; i++){
+document.write('<div id="Nx'+i+'" style="position:absolute;top:0px;left:0px;width:2px;height:2px;font-size:2px;background:#'+sCol+'"></div>');
+}
+}
+if (NS4){
+dgts='1 2 3 4 5 6 7 8 9 10 11 12';
+dgts=dgts.split(' ')
+for (i=0; i < dots; i++){
+document.write('<layer name=nsDigits'+i+' top=0 left=0 height=30 width=30><center><font face=Arial size=1 color='+fCol+'>'+dgts[i]+'</font></center></layer>');
+}
+for (i=0; i < M.length; i++){
+document.write('<layer name=ny'+i+' top=0 left=0 bgcolor='+mCol+' clip="0,0,2,2"></layer>');
+}
+for (i=0; i < H.length; i++){
+document.write('<layer name=nz'+i+' top=0 left=0 bgcolor='+hCol+' clip="0,0,2,2"></layer>');
+}
+for (i=0; i < S.length; i++){
+document.write('<layer name=nx'+i+' top=0 left=0 bgcolor='+sCol+' clip="0,0,2,2"></layer>');
+}
+}
+if (IE4){
+document.write('<div style="position:absolute;top:0px;left:0px"><div style="position:relative">');
+for (i=1; i < dots+1; i++){
+document.write('<div id="ieDigits" style="position:absolute;top:0px;left:0px;width:30px;height:30px;font-family:Arial;font-size:10px;color:'+fCol+';text-align:center;padding-top:10px">'+i+'</div>');
+}
+document.write('</div></div>')
+document.write('<div style="position:absolute;top:0px;left:0px"><div style="position:relative">');
+for (i=0; i < M.length; i++){
+document.write('<div id=y style="position:absolute;width:2px;height:2px;font-size:2px;background:'+mCol+'"></div>');
+}
+document.write('</div></div>')
+document.write('<div style="position:absolute;top:0px;left:0px"><div style="position:relative">');
+for (i=0; i < H.length; i++){
+document.write('<div id=z style="position:absolute;width:2px;height:2px;font-size:2px;background:'+hCol+'"></div>');
+}
+document.write('</div></div>')
+document.write('<div style="position:absolute;top:0px;left:0px"><div style="position:relative">');
+for (i=0; i < S.length; i++){
+document.write('<div id=x style="position:absolute;width:2px;height:2px;font-size:2px;background:'+sCol+'"></div>');
+}
+document.write('</div></div>')
+}
+
+
+
+function clock(){
+time = new Date ();
+secs = time.getSeconds();
+sec = -1.57 + Math.PI * secs/30;
+mins = time.getMinutes();
+min = -1.57 + Math.PI * mins/30;
+hr = time.getHours();
+hrs = -1.57 + Math.PI * hr/6 + Math.PI*parseInt(time.getMinutes())/360;
+
+if (NS6){
+Ypos=window.pageYOffset+window.innerHeight-Ybase-25;
+Xpos=window.pageXOffset+window.innerWidth-Xbase-30;
+for (i=1; i < dots+1; i++){
+ document.getElementById("n6Digits"+i).style.top=Ypos-15+Ybase*Math.sin(-1.56 +i *Split*Math.PI/180)
+ document.getElementById("n6Digits"+i).style.left=Xpos-15+Xbase*Math.cos(-1.56 +i*Split*Math.PI/180)
+ }
+for (i=0; i < S.length; i++){
+ document.getElementById("Nx"+i).style.top=Ypos+i*Ybase/4.1*Math.sin(sec);
+ document.getElementById("Nx"+i).style.left=Xpos+i*Xbase/4.1*Math.cos(sec);
+ }
+for (i=0; i < M.length; i++){
+ document.getElementById("Ny"+i).style.top=Ypos+i*Ybase/4.1*Math.sin(min);
+ document.getElementById("Ny"+i).style.left=Xpos+i*Xbase/4.1*Math.cos(min);
+ }
+for (i=0; i < H.length; i++){
+ document.getElementById("Nz"+i).style.top=Ypos+i*Ybase/4.1*Math.sin(hrs);
+ document.getElementById("Nz"+i).style.left=Xpos+i*Xbase/4.1*Math.cos(hrs);
+ }
+}
+if (NS4){
+Ypos=window.pageYOffset+window.innerHeight-Ybase-20;
+Xpos=window.pageXOffset+window.innerWidth-Xbase-30;
+for (i=0; i < dots; ++i){
+ document.layers["nsDigits"+i].top=Ypos-5+Ybase*Math.sin(-1.045 +i*Split*Math.PI/180)
+ document.layers["nsDigits"+i].left=Xpos-15+Xbase*Math.cos(-1.045 +i*Split*Math.PI/180)
+ }
+for (i=0; i < S.length; i++){
+ document.layers["nx"+i].top=Ypos+i*Ybase/4.1*Math.sin(sec);
+ document.layers["nx"+i].left=Xpos+i*Xbase/4.1*Math.cos(sec);
+ }
+for (i=0; i < M.length; i++){
+ document.layers["ny"+i].top=Ypos+i*Ybase/4.1*Math.sin(min);
+ document.layers["ny"+i].left=Xpos+i*Xbase/4.1*Math.cos(min);
+ }
+for (i=0; i < H.length; i++){
+ document.layers["nz"+i].top=Ypos+i*Ybase/4.1*Math.sin(hrs);
+ document.layers["nz"+i].left=Xpos+i*Xbase/4.1*Math.cos(hrs);
+ }
+}
+
+if (IE4){
+Ypos=document.body.scrollTop+window.document.body.clientHeight-Ybase-20;
+Xpos=document.body.scrollLeft+window.document.body.clientWidth-Xbase-20;
+for (i=0; i < dots; ++i){
+ ieDigits[i].style.pixelTop=Ypos-15+Ybase*Math.sin(-1.045 +i *Split*Math.PI/180)
+ ieDigits[i].style.pixelLeft=Xpos-15+Xbase*Math.cos(-1.045 +i *Split*Math.PI/180)
+ }
+for (i=0; i < S.length; i++){
+ x[i].style.pixelTop =Ypos+i*Ybase/4.1*Math.sin(sec);
+ x[i].style.pixelLeft=Xpos+i*Xbase/4.1*Math.cos(sec);
+ }
+for (i=0; i < M.length; i++){
+ y[i].style.pixelTop =Ypos+i*Ybase/4.1*Math.sin(min);
+ y[i].style.pixelLeft=Xpos+i*Xbase/4.1*Math.cos(min);
+ }
+for (i=0; i < H.length; i++){
+ z[i].style.pixelTop =Ypos+i*Ybase/4.1*Math.sin(hrs);
+ z[i].style.pixelLeft=Xpos+i*Xbase/4.1*Math.cos(hrs);
+ }
+}
+setTimeout('clock()',100);
+}
+clock();
+//-->
+</script>
+
+</body>
+</html>
