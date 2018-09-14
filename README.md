@@ -1,4 +1,10 @@
 # 2012Web_Programming
-2012 1-1 Web_Programming Final Project (self-introduction page)
 
-Run the 'Wep_programming_Project.HTML'File
+### 1. project
+> * Self-introduction page
+
+### 2. Based
+>  * basic HTML,CSS Javascript and so on..
+
+### 3. How to run
+>  * Wep_programming_Project.HTML
