@@ -7,4 +7,4 @@
 >  * basic HTML,CSS Javascript and so on..
 
 ### 3. How to run
->  * Wep_programming_Project.HTML
+>  * Web_programming_Project.HTML
